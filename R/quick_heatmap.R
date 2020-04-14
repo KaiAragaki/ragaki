@@ -41,7 +41,7 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable = c()) {
                 dplyr::as_tibble()
 
         col_data <- col_data %>%
-                arrange(!!! syms(stratify_variable))
+                dplyr::arrange(!!! rlang::syms(stratify_variable))
 
 
         annot_col <- as.data.frame(dplyr::select(col_data, !!!rlang::syms(stratify_variable)))
