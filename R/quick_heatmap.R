@@ -1,3 +1,13 @@
+#' Quickly make group-stratified heatmaps
+#'
+#' @param dds A DDS object with the \code{assay(dds, 2)} containing normalized counts.
+#' @param genes A list containing hgnc symbols.
+#' @param stratify_variable A character list of colnames from \code{colData(dds)} on which to stratify
+#'
+#' @return A pheatmap
+#' @export
+#'
+#' @examples
 quick_heatmap <- function(dds, genes = c(), stratify_variable = c()) {
 
 
