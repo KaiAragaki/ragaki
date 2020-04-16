@@ -20,3 +20,5 @@ Imports:
 URL: https://github.com/KaiAragaki/ragaki
 BugReports: https://github.com/KaiAragaki/ragaki/issues
 RoxygenNote: 7.1.0
+Suggests: 
+    testthat
