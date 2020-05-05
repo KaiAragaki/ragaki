@@ -4,14 +4,33 @@
 \alias{quick_heatmap}
 \title{Quickly make group-stratified heatmaps}
 \usage{
-quick_heatmap(dds, genes = c(), stratify_variable = c())
+quick_heatmap(
+  dds,
+  genes = c(),
+  stratify_variable_col = c(),
+  stratify_variable_row = c(),
+  color_blind_friendly = F,
+  assay_number = 2,
+  col_id_position = 1,
+  row_id_position = 1
+)
 }
 \arguments{
 \item{dds}{A DDS object with the \code{assay(dds, 2)} containing normalized counts.}
 
 \item{genes}{A list containing hgnc symbols.}
 
-\item{stratify_variable}{A character list of colnames from \code{colData(dds)} on which to stratify}
+\item{stratify_variable_col}{A character list of colnames from \code{colData(dds)} on which to stratify}
+
+\item{stratify_variable_row}{A character list of colnames from \code{rowData(dds)} on which to stratify}
+
+\item{color_blind_friendly}{Should the output be Red-Blue instead of Red-Green?}
+
+\item{assay_number}{The slot in the SummarizedExperiment object where the normalized counts reside}
+
+\item{col_id_position}{The column position in colData which the sample identifier lies}
+
+\item{row_id_position}{The column position in rowData which the gene identifier lies}
 }
 \value{
 A pheatmap
