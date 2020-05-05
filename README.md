@@ -16,3 +16,11 @@ In brief, takes:
 ### Future directions
 1. Allow for subsetting by `colData` `colname`
 2. Allow for passing arguments to pheatmap
+
+## cbind_colData
+Takes two dataframes, or a dataframe and a `SummarizedExperiment`, and joins them with one another, matching by their rownames.
+
+Plays nice with `DESeq2`'s `dds` objects and the like because it does *not* use the tidyverse.
+
+### Future directions
+1. Implement the tidyverse! I would much prefer to use all the trappings of dplyr et al than have to work with my own implementation. Perhaps a thin wrapper of some sort? 
