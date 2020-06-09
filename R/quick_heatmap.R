@@ -17,8 +17,7 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
                           stratify_variable_row = c(), color_blind_friendly = F,
                           assay_number = 2, col_id_position = 1, row_id_position = 1) {
 
-
-        # Check if stratifying variables are in the colData
+        # Check if stratifying variables are in the data
         strat_vars_in_col <- stratify_variable_col %in% colnames(SummarizedExperiment::colData(dds))
         strat_vars_in_row <- stratify_variable_row %in% colnames(SummarizedExperiment::rowData(dds))
 
@@ -55,28 +54,39 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
         }
 
         # Prepare Column Annotation Dataframe
-        col_data <- SummarizedExperiment::colData(filtered_genes)@listData %>%
-                dplyr::as_tibble() %>%
-                dplyr::arrange(!!!rlang::syms(stratify_variable_col))
+        if(length(stratify_variable_col) > 0) {
+                col_data <- SummarizedExperiment::colData(filtered_genes)@listData %>%
+                        dplyr::as_tibble() %>%
+                        dplyr::arrange(!!!rlang::syms(stratify_variable_col))
 
-        annot_col <- as.data.frame(dplyr::select(col_data, !!!rlang::syms(stratify_variable_col)))
-        rownames(annot_col) <- col_data[[col_id_position]]
+                annot_col <- as.data.frame(dplyr::select(col_data, !!!rlang::syms(stratify_variable_col)))
+                rownames(annot_col) <- col_data[[col_id_position]]
 
-        matched_blca <- match(col_data[[col_id_position]], colnames(filtered_genes))
-        arranged_blca <- filtered_genes[,matched_blca]
+                matched_dds <- match(col_data[[col_id_position]], colnames(filtered_genes))
+                arranged_dds <- filtered_genes[,matched_dds]
+        }
+
+        if(length(stratify_variable_col) == 0){
+                stratify_variable_col <- NA
+        }
 
         # Prepare Row Annotation Dataframe
-        row_data <- SummarizedExperiment::rowData(filtered_genes)@listData %>%
-                dplyr::as_tibble() %>%
-                dplyr::arrange(!!!rlang::syms(stratify_variable_row))
+        if(length(stratify_variable_row) > 0) {
+                row_data <- SummarizedExperiment::rowData(filtered_genes)@listData %>%
+                        dplyr::as_tibble() %>%
+                        dplyr::arrange(!!!rlang::syms(stratify_variable_row))
 
-        annot_row <- as.data.frame(dplyr::select(row_data, !!!rlang::syms(stratify_variable_row)))
-        rownames(annot_row) <- row_data[[row_id_position]]
+                annot_row <- as.data.frame(dplyr::select(row_data, !!!rlang::syms(stratify_variable_row)))
+                rownames(annot_row) <- row_data[[row_id_position]]
 
-        matched_blca <- match(row_data[[row_id_position]], rownames(filtered_genes))
-        arranged_blca <- arranged_blca[matched_blca,]
+                matched_dds <- match(row_data[[row_id_position]], rownames(filtered_genes))
+                arranged_dds <- arranged_dds[matched_dds,]
+        }
+        if(length(stratify_variable_row) == 0){
+                stratify_variable_row <- NA
+        }
 
-        norm_counts <- SummarizedExperiment::assay(arranged_blca, assay_number)
+        norm_counts <- SummarizedExperiment::assay(arranged_dds, assay_number)
 
         # Choose Heatmap Palette
         if (color_blind_friendly == T) {
@@ -91,5 +101,6 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
                  cluster_cols = F,
                  annotation_col = annot_col,
                  annotation_row = annot_row,
-                 show_colnames = F)
+                 show_colnames = F,
+                 border_color = "NA")
 }
