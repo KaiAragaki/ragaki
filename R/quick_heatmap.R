@@ -67,7 +67,7 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
         }
 
         if(length(stratify_variable_col) == 0){
-                stratify_variable_col <- NA
+                annot_col <- NA
         }
 
         # Prepare Row Annotation Dataframe
@@ -83,7 +83,7 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
                 arranged_dds <- arranged_dds[matched_dds,]
         }
         if(length(stratify_variable_row) == 0){
-                stratify_variable_row <- NA
+                annot_row <- NA
         }
 
         norm_counts <- SummarizedExperiment::assay(arranged_dds, assay_number)
