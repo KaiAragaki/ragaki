@@ -63,7 +63,7 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
                 rownames(annot_col) <- col_data[[col_id_position]]
 
                 matched_dds <- match(col_data[[col_id_position]], colnames(filtered_genes))
-                arranged_dds <- filtered_genes[,matched_dds]
+                filtered_genes <- filtered_genes[,matched_dds]
         }
 
         if(length(stratify_variable_col) == 0){
@@ -80,13 +80,20 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
                 rownames(annot_row) <- row_data[[row_id_position]]
 
                 matched_dds <- match(row_data[[row_id_position]], rownames(filtered_genes))
-                arranged_dds <- arranged_dds[matched_dds,]
+                filtered_genes <- filtered_genes[matched_dds,]
         }
         if(length(stratify_variable_row) == 0){
                 annot_row <- NA
         }
 
-        norm_counts <- SummarizedExperiment::assay(arranged_dds, assay_number)
+        # Remove genes that have an SD of 0
+        filtered_genes <- filtered_genes[which(apply(SummarizedExperiment::assay(dds, 1), 1, stats::sd) != 0)]
+        zero_sd <- names(which(apply(SummarizedExperiment::assay(dds, 1), 1, stats::sd) == 0))
+        if(length(zero_sd > 0)) {
+                warning(paste0("\nGene '", zero_sd, "' had an SD of 0 and has been dropped."))
+        }
+
+        norm_counts <- SummarizedExperiment::assay(filtered_genes, assay_number)
 
         # Choose Heatmap Palette
         if (color_blind_friendly == T) {
@@ -95,9 +102,10 @@ quick_heatmap <- function(dds, genes = c(), stratify_variable_col = c(),
                 myHeat <- grDevices::colorRampPalette(c("green", "black", "red"))
         }
 
+
         pheatmap::pheatmap(mat = norm_counts,
-                 scale = "row",
                  color = myHeat(100),
+                 scale = "row",
                  cluster_cols = F,
                  annotation_col = annot_col,
                  annotation_row = annot_row,
